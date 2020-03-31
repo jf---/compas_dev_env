@@ -20,6 +20,7 @@ dependencies:
 #  - triangle # not so sure
   # testing
   - trimesh>=3.6
+  - shapely>=1.7
   # compilation tools
   - llvmlite>=0.31
   - cmake
