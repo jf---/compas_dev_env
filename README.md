@@ -1,6 +1,6 @@
 # compas_env
 
-some scripts that help to setup a `compas` development environment
+some scripts that help to setup a [`compas`](https://github.com/compas-dev/compas) development environment
 
 - developer focussed
     - forks the repos such to be able to create pull requests conveniently
