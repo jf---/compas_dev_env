@@ -8,7 +8,7 @@ from pathlib import Path
 import dotenv
 from git import Repo, GitCommandError
 from github import Github
-from invoke import task
+from invoke import task, UnexpectedExit
 from loguru import logger
 
 dotenv.load_dotenv()
@@ -194,5 +194,23 @@ def update_modules(ctx, pull=True, fork=False):
                 # $ git remote add upstream https://github.com/octocat/Spoon-Knife.git
 
 
-if __name__ == "__main__":
-    update_modules(fork=True)
+@task
+def run_all_tests(ctx):
+
+    x = loop_compas_modules()
+    repo_dir_ = next(x)
+
+    for k, v, check_mod, check_mod_exists in x:
+        if check_mod_exists:
+            logger.debug(f"repo: {k}, {check_mod}")
+            with chdir(check_mod):
+                try:
+                    _task = ctx.run("pytest .")
+                except UnexpectedExit as e:
+                    logger.debug(f"pytest failed for module: {k}\n"
+                                 f"{e}")
+                    # logger.exception("omg\n")
+
+        else:
+            logger.debug(f"module {k} not found")
+
