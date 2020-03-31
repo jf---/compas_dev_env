@@ -1,0 +1,12 @@
+pyinvoke==1.0.4
+loguru==0.4.1
+imageio==2.8
+# dev utils
+invoke==1.4.1
+# docs
+sphinx_compas_theme >=0.6.6
+sphinx >=2.4
+# fork repos
+PyGitHub==1.47
+gitpython==3.1
+python-dotenv>=0.12

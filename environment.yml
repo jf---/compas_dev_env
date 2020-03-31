@@ -1,0 +1,33 @@
+name: compas
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.8
+  # numerical
+  - numpy>=1.18 # 1.15 gives issues
+  # conda
+  - pytest>=5.3
+  - matplotlib>=3.2
+  - cython
+  - sympy
+  - scipy
+  - planarity=3.0
+  - pillow
+  # compas_viewers
+  - pyside2=5.13
+  # compas_triangle
+#  - triangle # not so sure
+  # testing
+  - trimesh>=3.6
+  # compilation tools
+  - llvmlite>=0.31
+  - cmake
+  #
+  - pythreejs>=2.2
+  - ipython
+  - jupyter
+  #
+  - pip
+  - pip:
+    - -r file:requirements.txt # warm fuzzy version completion in IDE
