@@ -190,9 +190,6 @@ def update_modules(ctx, pull=True, fork=False):
                     )
                     pass
 
-                # allow to sync fork with original repo
-                # $ git remote add upstream https://github.com/octocat/Spoon-Knife.git
-
 
 @task
 def run_all_tests(ctx):
@@ -207,10 +204,11 @@ def run_all_tests(ctx):
                 try:
                     _task = ctx.run("pytest .")
                 except UnexpectedExit as e:
-                    logger.debug(f"pytest failed for module: {k}\n"
-                                 f"{e}")
+                    logger.debug(f"pytest failed for module: {k}\n" f"{e}")
                     # logger.exception("omg\n")
 
         else:
-            logger.debug(f"module {k} not found")
-
+            logger.debug(
+                f"module {k} not found, "
+                f"run `invoke conda-install` and `invoke pip-install` first"
+            )
