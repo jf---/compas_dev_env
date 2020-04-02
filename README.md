@@ -17,10 +17,12 @@ some scripts that help to setup a [`compas`](https://github.com/compas-dev/compa
 
 ## TODO
 
+[stubs]: https://stevebaer.wordpress.com/2019/02/25/autocomplete-and-type-hints-with-python-scripts-for-rhino-grasshopper/
 - [ ] rebase a repo from `origin` when dealing with a forked repo
 - [ ] actually install modules in Rhino's python path
     - [ ] incl `RhinoWIP` support
-- [ ] conda package for [libigl](https://anaconda.org/freecad/libigl) exists on the `freecad` channel, but old and `linux` only
+    - [x] [Rhino-stubs][stubs] for proper type completion 
+- [x] conda package for [libigl](https://anaconda.org/freecad/libigl) exists on the `freecad` channel, but old and `linux` only
     
      
     
