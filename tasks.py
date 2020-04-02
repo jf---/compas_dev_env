@@ -129,6 +129,7 @@ def update_modules(ctx, pull=True, fork=False):
 
     x = loop_compas_modules()
     repo_dir_ = next(x)
+    ctx.run("git pull")
 
     for k, v, check_mod, check_mod_exists in x:
         logger.info(f"folder: {repo_dir_}")
@@ -204,8 +205,7 @@ def run_all_tests(ctx):
                 try:
                     _task = ctx.run("pytest .")
                 except UnexpectedExit as e:
-                    logger.debug(f"pytest failed for module: {k}\n" f"{e}")
-                    # logger.exception("omg\n")
+                    logger.critical(f"pytest failed for module: {k}\n" f"{e}")
 
         else:
             logger.debug(
