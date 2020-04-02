@@ -21,6 +21,8 @@ dependencies:
   # testing
   - trimesh>=3.6
   - shapely>=1.7
+  - igl>=0.4
+  - meshplot
   # compilation tools
   - llvmlite>=0.31
   - cmake
