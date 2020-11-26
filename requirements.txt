@@ -1,19 +1,19 @@
 pyinvoke==1.0.4
-loguru==0.4.1
-imageio==2.8
+loguru==0.5.3
+imageio==2.9
 # dev utils
 invoke==1.4.1
 # docs
 sphinx_compas_theme >=0.6.6
-sphinx >=2.4
+sphinx >=3.3
 # fork repos
-PyGitHub==1.47
-gitpython==3.1
-python-dotenv>=0.12
-PyOpenGL==3.1.5
+PyGitHub==1.53
+gitpython>=3.1
+python-dotenv>=0.15
+PyOpenGL>=3.1.5
 # Rhino
-Rhino-stubs>=7 # RhinoCommon
-Eto-stubs>2.5
-Grasshopper-stubs>=7
-GH-IO-stubs>=7
-GH-Util-stubs>=7
+Rhino-stubs>=7.0.19277 # RhinoCommon
+Eto-stubs>=2.5.1
+Grasshopper-stubs>=7.0.19277
+GH-IO-stubs>=7.0.19277
+GH-Util-stubs>=7.0.19277
