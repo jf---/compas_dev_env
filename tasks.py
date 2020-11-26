@@ -42,11 +42,52 @@ COMPAS_MODULES = {
 base_dir = Path(__file__).parent.resolve()
 
 
-@task(default=True)
-def help(ctx):
-    """Lists available tasks and usage."""
-    ctx.run("invoke --list")
-    # log.write('Use "invoke -h <taskname>" to get detailed help for a task.')
+def fork_clone_repo(v):
+    # adapted from: https://gist.github.com/christ66/git-fork-clone-upstream.py
+    token = os.getenv("GITHUB_TOKEN")
+
+    if token == "NO_TOKEN":
+        logger.info("go fetch me a github token")
+        webbrowser.open("https://github.com/settings/tokens")
+        sys.exit()
+
+    g = Github(token)
+    user = g.get_user()
+    url = str(v).replace("https://github.com/", "").split("/")
+    org = g.get_organization(url[0])
+
+    repo = org.get_repo(url[1])
+
+    my_fork = user.create_fork(repo)
+
+    logger.debug(f"forked repo {url[0]}/{url[1]}")
+
+    try:
+        local_repo = Repo.clone_from(
+            "git@github.com:" + str(user.login) + "/" + str(repo.name) + ".git",
+            base_dir.parent / repo.name,
+            branch="master",
+        )
+
+        # test if the remote repo doesn't already exist
+
+        Repo.create_remote(
+            local_repo, "upstream", "git@github.com:" + url[0] + "/" + url[1] + ".git",
+        )
+    except GitCommandError:
+        logger.debug("Directory already exists and is not empty. Not cloning.")
+        pass
+
+
+def loop_compas_modules():
+    repo_dir_ = base_dir.parent
+    yield repo_dir_
+    logger.info(base_dir)
+
+    for k, v in COMPAS_MODULES.items():
+        check_mod = repo_dir_ / k
+        check_mod_exists = check_mod.exists()
+        yield k, v, check_mod, check_mod_exists
 
 
 def confirm(question):
@@ -60,6 +101,13 @@ def confirm(question):
             return True
 
         print("Focus, kid! It is either (y)es or (n)o", file=sys.stderr)
+
+
+@task(default=True)
+def help(ctx):
+    """Lists available tasks and usage."""
+    ctx.run("invoke --list")
+    # log.write('Use "invoke -h <taskname>" to get detailed help for a task.')
 
 
 @contextlib.contextmanager
@@ -116,17 +164,6 @@ def pip_install(ctx):
                     logger.info(f"running pip install succeeded")
 
 
-def loop_compas_modules():
-    repo_dir_ = base_dir.parent
-    yield repo_dir_
-    logger.info(base_dir)
-
-    for k, v in COMPAS_MODULES.items():
-        check_mod = repo_dir_ / k
-        check_mod_exists = check_mod.exists()
-        yield k, v, check_mod, check_mod_exists
-
-
 @task
 def update_modules(ctx, pull=True, fork=False):
     # def update_modules(pull=True, fork=False):
@@ -134,12 +171,13 @@ def update_modules(ctx, pull=True, fork=False):
 
     x = loop_compas_modules()
     repo_dir_ = next(x)
-    ctx.run("git pull")
+    # ctx.run("git pull")
 
     for k, v, check_mod, check_mod_exists in x:
         logger.info(f"folder: {repo_dir_}")
         logger.info(f"{k}: {v}")
         logger.info(f"module {k} found")
+        logger.info(f"module {check_mod} exists? {check_mod_exists}")
 
         if check_mod_exists:
             with chdir(check_mod):
@@ -148,58 +186,16 @@ def update_modules(ctx, pull=True, fork=False):
                     ctx.run("git pull")
                     logger.info(f"update complete")
         else:
-            # TODO: fork the repo rather than just cloning it
-            if not fork:
-                ctx.run(f"git clone {v}")
-            else:
-
-                # adapted from: https://gist.github.com/christ66/git-fork-clone-upstream.py
-                token = os.getenv("GITHUB_TOKEN")
-
-                if token == "NO_TOKEN":
-                    logger.info("go fetch me a github token")
-                    webbrowser.open("https://github.com/settings/tokens")
-                    sys.exit()
-
-                g = Github(token)
-                user = g.get_user()
-                url = str(v).replace("https://github.com/", "").split("/")
-                org = g.get_organization(url[0])
-
-                repo = org.get_repo(url[1])
-
-                my_fork = user.create_fork(repo)
-
-                logger.debug(f"forked repo {url[0]}/{url[1]}")
-
-                try:
-                    local_repo = Repo.clone_from(
-                        "git@github.com:"
-                        + str(user.login)
-                        + "/"
-                        + str(repo.name)
-                        + ".git",
-                        base_dir.parent / repo.name,
-                        branch="master",
-                    )
-
-                    # test if the remote repo doesn't already exist
-
-                    Repo.create_remote(
-                        local_repo,
-                        "upstream",
-                        "git@github.com:" + url[0] + "/" + url[1] + ".git",
-                    )
-                except GitCommandError:
-                    logger.debug(
-                        "Directory already exists and is not empty. Not cloning."
-                    )
-                    pass
+            with chdir(repo_dir_):
+                # TODO: fork the repo rather than just cloning it
+                if not fork:
+                    ctx.run(f"git clone {v}")
+                else:
+                    fork_clone_repo(v)
 
 
 @task
 def run_all_tests(ctx):
-
     x = loop_compas_modules()
     repo_dir_ = next(x)
 
