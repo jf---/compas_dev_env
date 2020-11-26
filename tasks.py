@@ -32,6 +32,11 @@ COMPAS_MODULES = {
     "compas_3gs": f"{GH_BRG_PREFIX}/compas_3gs",
     "compas_loadpath": f"{GH_BRG_PREFIX}/compas_loadpath",
     "compas_fofin": f"{GH_BRG_PREFIX}/compas_fofin",
+    "compas_singular": f"{GH_BRG_PREFIX}/compas_singular",
+    "compas_skeleton": f"{GH_BRG_PREFIX}/compas_skeleton",
+    "compas_installer": f"{GH_BRG_PREFIX}/compas_installer",
+    "compas-RV2": f"{GH_BRG_PREFIX}/compas-RV2",
+    "compas_gmsh": f"{GH_BRG_PREFIX}/compas_gmsh",
 }
 
 base_dir = Path(__file__).parent.resolve()
